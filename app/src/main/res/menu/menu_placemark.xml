@@ -4,7 +4,6 @@
 
     <item
         android:id="@+id/item_cancel"
-
         android:title="@string/menu_cancelPlacemark"
         app:showAsAction="always" />
 </menu>
