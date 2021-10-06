@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.wit.placemark.R
 import org.wit.placemark.adapters.PlacemarkAdapter
@@ -14,6 +15,7 @@ import org.wit.placemark.main.MainApp
 import org.wit.placemark.models.PlacemarkModel
 
 class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
+
 
     lateinit var app: MainApp
     private lateinit var binding: ActivityPlacemarkListBinding
@@ -54,6 +56,13 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
         launcherIntent.putExtra("placemark_edit", placemark)
         startActivityForResult(launcherIntent,0)
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        binding.recyclerView.adapter?.notifyDataSetChanged()
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+
 
 }
 
