@@ -1,6 +1,7 @@
 package org.wit.placemark.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,6 +14,7 @@ import org.wit.placemark.R
 import org.wit.placemark.databinding.ActivityPlacemarkBinding
 import org.wit.placemark.helpers.showImagePicker
 import org.wit.placemark.main.MainApp
+import org.wit.placemark.models.Location
 import org.wit.placemark.models.PlacemarkModel
 import timber.log.Timber
 import timber.log.Timber.i
@@ -21,6 +23,9 @@ import timber.log.Timber.i
 class PlacemarkActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlacemarkBinding
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
+
+    //var location = Location(52.245696, -7.139102, 15f)
     var placemark = PlacemarkModel()
     lateinit var app: MainApp
 
@@ -39,10 +44,12 @@ class PlacemarkActivity : AppCompatActivity() {
             binding.placemarkTitle.setText(placemark.title)
             binding.description.setText(placemark.description)
             binding.btnAdd.setText(R.string.button_savePlacemark)
-            binding.chooseImage.setText(R.string.button_changeImage)
             Picasso.get()
                 .load(placemark.image)
                 .into(binding.placemarkImage)
+            if (placemark.image != Uri.EMPTY) {
+                binding.chooseImage.setText(R.string.change_placemark_image)
+            }
         }
 
         binding.btnAdd.setOnClickListener() {
@@ -66,7 +73,22 @@ class PlacemarkActivity : AppCompatActivity() {
         binding.chooseImage.setOnClickListener {
             showImagePicker(imageIntentLauncher)
         }
+
+        binding.placemarkLocation.setOnClickListener {
+            i ("Set Location Pressed")
+            val location = Location(52.245696, -7.139102, 15f)
+            if (placemark.zoom != 0f) {
+                location.lat =  placemark.lat
+                location.lng = placemark.lng
+                location.zoom = placemark.zoom
+            }
+            val launcherIntent = Intent(this, MapActivity::class.java)
+                .putExtra("location", location)
+            mapIntentLauncher.launch(launcherIntent)
+        }
+
         registerImagePickerCallback()
+        registerMapCallback()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -77,6 +99,10 @@ class PlacemarkActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.item_cancel -> { finish() }
+            R.id.item_delete -> {
+                app.placemarks.delete(placemark.copy())
+                finish()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -93,6 +119,27 @@ class PlacemarkActivity : AppCompatActivity() {
                             Picasso.get()
                                 .load(placemark.image)
                                 .into(binding.placemarkImage)
+                            binding.chooseImage.setText(R.string.change_placemark_image)
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
+    }
+
+    private fun registerMapCallback() {
+        mapIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when (result.resultCode) {
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            i("Got Location ${result.data.toString()}")
+                            val location = result.data!!.extras?.getParcelable<Location>("location")!!
+                            i("Location == $location")
+                            placemark.lat = location.lat
+                            placemark.lng = location.lng
+                            placemark.zoom = location.zoom
                         } // end of if
                     }
                     RESULT_CANCELED -> { } else -> { }
