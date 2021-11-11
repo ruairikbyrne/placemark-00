@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.wit.placemark">
 
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -13,6 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Placemark">
+        <activity
+            android:name=".activities.PlacemarkMapsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_placemark_maps"
+            android:theme="@style/Theme.Placemark.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -31,7 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.PlacemarkActivity"></activity>
+        <activity android:name=".activities.PlacemarkActivity" />
     </application>
 
 </manifest>

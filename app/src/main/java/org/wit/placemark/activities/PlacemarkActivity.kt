@@ -28,10 +28,11 @@ class PlacemarkActivity : AppCompatActivity() {
     //var location = Location(52.245696, -7.139102, 15f)
     var placemark = PlacemarkModel()
     lateinit var app: MainApp
+    var edit = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var edit = false
+        //var edit = false
         binding = ActivityPlacemarkBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.toolbarAdd.title = title
@@ -93,6 +94,7 @@ class PlacemarkActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_placemark, menu)
+        if (edit && menu != null) menu.getItem(0).setVisible(true)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -100,7 +102,7 @@ class PlacemarkActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.item_cancel -> { finish() }
             R.id.item_delete -> {
-                app.placemarks.delete(placemark.copy())
+                app.placemarks.delete(placemark)
                 finish()
             }
         }

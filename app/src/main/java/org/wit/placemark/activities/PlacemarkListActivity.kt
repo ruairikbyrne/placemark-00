@@ -22,6 +22,7 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
     lateinit var app: MainApp
     private lateinit var binding: ActivityPlacemarkListBinding
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,10 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
                 val launcherIntent = Intent(this, PlacemarkActivity::class.java)
                 refreshIntentLauncher.launch(launcherIntent)
             }
+            R.id.item_map -> {
+                val launcherIntent = Intent(this, PlacemarkMapsActivity::class.java)
+                refreshIntentLauncher.launch(launcherIntent)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -60,7 +65,7 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
     override fun onPlacemarkClick(placemark: PlacemarkModel) {
         val launcherIntent = Intent(this, PlacemarkActivity::class.java)
         launcherIntent.putExtra("placemark_edit", placemark)
-        refreshIntentLauncher.launch(launcherIntent)
+        mapIntentLauncher.launch(launcherIntent)
     }
 
     private fun registerRefreshCallback() {
