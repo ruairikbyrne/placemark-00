@@ -29,8 +29,8 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
         binding = ActivityPlacemarkListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.toolbar.title = title
-        setSupportActionBar(binding.toolbar)
+        binding.toolbarAdd.title = title
+        setSupportActionBar(binding.toolbarAdd)
 
         app = application as MainApp
 
@@ -40,6 +40,7 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
         loadPlacemarks()
 
         registerRefreshCallback()
+        registerMapCallback()
 
     }
 
@@ -72,6 +73,12 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
         refreshIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             { loadPlacemarks() }
+    }
+
+    private fun registerMapCallback() {
+        mapIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            {  }
     }
 
     private fun loadPlacemarks() {

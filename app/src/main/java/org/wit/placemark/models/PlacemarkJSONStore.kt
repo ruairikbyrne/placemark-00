@@ -74,6 +74,11 @@ class PlacemarkJSONStore(private val context: Context) : PlacemarkStore {
     private fun logAll() {
         placemarks.forEach { Timber.i("$it") }
     }
+
+    override fun findById(id:Long) : PlacemarkModel? {
+        val foundPlacemark: PlacemarkModel? = placemarks.find { it.id == id }
+        return foundPlacemark
+    }
 }
 
 class UriParser : JsonDeserializer<Uri>,JsonSerializer<Uri> {
