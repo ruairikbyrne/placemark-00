@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import org.wit.placemark.R
@@ -17,6 +18,7 @@ class PlacemarkView : AppCompatActivity() {
     private lateinit var binding: ActivityPlacemarkBinding
     private lateinit var presenter: PlacemarkPresenter
     var placemark = PlacemarkModel()
+    lateinit var map: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +29,12 @@ class PlacemarkView : AppCompatActivity() {
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
 
+        binding.mapView2.onCreate(savedInstanceState);
+        binding.mapView2.getMapAsync {
+            map = it
+            presenter.doConfigureMap(map)
+        }
+
         presenter = PlacemarkPresenter(this)
 
         binding.chooseImage.setOnClickListener {
@@ -34,9 +42,16 @@ class PlacemarkView : AppCompatActivity() {
             presenter.doSelectImage()
         }
 
+        /*
         binding.placemarkLocation.setOnClickListener {
             presenter.cachePlacemark(binding.placemarkTitle.text.toString(), binding.description.text.toString())
             presenter.doSetLocation()
+        }
+        */
+        binding.mapView2.getMapAsync {
+            map = it
+            presenter.doConfigureMap(map)
+            it.setOnMapClickListener { presenter.doSetLocation() }
         }
 
     }
@@ -83,7 +98,8 @@ class PlacemarkView : AppCompatActivity() {
         if (placemark.image != Uri.EMPTY) {
             binding.chooseImage.setText(R.string.change_placemark_image)
         }
-
+        binding.lat.setText("%.6f".format(placemark.lat))
+        binding.lng.setText("%.6f".format(placemark.lng))
     }
 
     fun updateImage(image: Uri){
@@ -94,4 +110,30 @@ class PlacemarkView : AppCompatActivity() {
         binding.chooseImage.setText(R.string.change_placemark_image)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.mapView2.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        binding.mapView2.onLowMemory()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.mapView2.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.mapView2.onResume()
+
+        presenter.doRestartLocationUpdates()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        binding.mapView2.onSaveInstanceState(outState)
+    }
 }

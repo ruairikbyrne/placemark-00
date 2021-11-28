@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.wit.placemark">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -13,10 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Placemark">
         <activity
-            android:name=".activities.PlacemarkMapsActivity"
-            android:exported="false"
+            android:name=".views.map.PlacemarkMapView"
             android:label="@string/title_activity_placemark_maps"
-            android:theme="@style/Theme.Placemark.NoActionBar" />
+            android:theme="@style/Theme.Placemark.NoActionBar"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

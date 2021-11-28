@@ -55,4 +55,11 @@ class PlacemarkListView : AppCompatActivity(), PlacemarkListener {
         binding.recyclerView.adapter = PlacemarkAdapter(presenter.getPlacemarks(), this)
         binding.recyclerView.adapter?.notifyDataSetChanged()
     }
+
+    override fun onResume() {
+        //update the view
+        binding.recyclerView.adapter?.notifyDataSetChanged()
+        //i("recyclerView onResume")
+        super.onResume()
+    }
 }

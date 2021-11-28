@@ -41,7 +41,7 @@ class PlacemarkActivity : AppCompatActivity() {
         app = application as MainApp
 
         i("Placemark Activity started...")
-
+/*
         if (intent.hasExtra("placemark_edit")) {
             edit = true
             placemark = intent.extras?.getParcelable("placemark_edit")!!
@@ -73,11 +73,12 @@ class PlacemarkActivity : AppCompatActivity() {
             setResult(RESULT_OK)
             finish()
         }
-
+*/
         binding.chooseImage.setOnClickListener {
             showImagePicker(imageIntentLauncher)
         }
 
+        /*
         binding.placemarkLocation.setOnClickListener {
             val location = Location(52.245696, -7.139102, 15f)
             if (placemark.zoom != 0f) {
@@ -89,7 +90,7 @@ class PlacemarkActivity : AppCompatActivity() {
                 .putExtra("location", location)
             mapIntentLauncher.launch(launcherIntent)
         }
-
+        */
         registerImagePickerCallback()
         registerMapCallback()
     }
