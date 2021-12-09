@@ -37,9 +37,9 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
         //binding.recyclerView.adapter = PlacemarkAdapter(app.placemarks)
-        loadPlacemarks()
+        //loadPlacemarks()
 
-        registerRefreshCallback()
+        //registerRefreshCallback()
         registerMapCallback()
 
     }
@@ -68,23 +68,23 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
         launcherIntent.putExtra("placemark_edit", placemark)
         mapIntentLauncher.launch(launcherIntent)
     }
-
+/*
     private fun registerRefreshCallback() {
         refreshIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             { loadPlacemarks() }
     }
-
+*/
     private fun registerMapCallback() {
         mapIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             {  }
     }
-
+/*
     private fun loadPlacemarks() {
         showPlacemarks(app.placemarks.findAll())
     }
-
+*/
     fun showPlacemarks (placemarks: List<PlacemarkModel>) {
         binding.recyclerView.adapter = PlacemarkAdapter(placemarks, this)
         binding.recyclerView.adapter?.notifyDataSetChanged()

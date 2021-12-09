@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.wit.placemark">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -13,10 +13,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Placemark">
+
+        <activity android:name=".views.login.LoginView"
+            android:label="@string/title_activity_login"
+            android:launchMode="singleTop"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".views.map.PlacemarkMapView"
+            android:exported="true"
             android:label="@string/title_activity_placemark_maps"
-            android:theme="@style/Theme.Placemark.NoActionBar"></activity>
+            android:theme="@style/Theme.Placemark.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -24,16 +36,11 @@
 
         <activity
             android:name=".views.editlocation.EditLocationView"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_map" />
         <activity
             android:name=".views.placemarklist.PlacemarkListView"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".views.placemark.PlacemarkView" />
     </application>

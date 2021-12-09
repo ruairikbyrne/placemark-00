@@ -92,7 +92,7 @@ class PlacemarkActivity : AppCompatActivity() {
         }
         */
         registerImagePickerCallback()
-        registerMapCallback()
+        //registerMapCallback()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -128,7 +128,7 @@ class PlacemarkActivity : AppCompatActivity() {
                 }
             }
     }
-
+/*
     private fun registerMapCallback() {
         mapIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
@@ -148,4 +148,6 @@ class PlacemarkActivity : AppCompatActivity() {
                 }
             }
     }
+
+ */
 }

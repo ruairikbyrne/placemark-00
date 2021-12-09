@@ -8,6 +8,10 @@ import android.view.MenuItem
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.wit.placemark.R
 import org.wit.placemark.databinding.ActivityPlacemarkBinding
 import org.wit.placemark.models.PlacemarkModel
@@ -17,23 +21,16 @@ class PlacemarkView : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlacemarkBinding
     private lateinit var presenter: PlacemarkPresenter
-    var placemark = PlacemarkModel()
     lateinit var map: GoogleMap
+    var placemark = PlacemarkModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         binding = ActivityPlacemarkBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
-
-        binding.mapView2.onCreate(savedInstanceState);
-        binding.mapView2.getMapAsync {
-            map = it
-            presenter.doConfigureMap(map)
-        }
 
         presenter = PlacemarkPresenter(this)
 
@@ -42,12 +39,12 @@ class PlacemarkView : AppCompatActivity() {
             presenter.doSelectImage()
         }
 
-        /*
-        binding.placemarkLocation.setOnClickListener {
+        binding.mapView2.setOnClickListener {
             presenter.cachePlacemark(binding.placemarkTitle.text.toString(), binding.description.text.toString())
             presenter.doSetLocation()
         }
-        */
+
+        binding.mapView2.onCreate(savedInstanceState);
         binding.mapView2.getMapAsync {
             map = it
             presenter.doConfigureMap(map)
@@ -75,11 +72,18 @@ class PlacemarkView : AppCompatActivity() {
                     Snackbar.make(binding.root, R.string.enter_placemark_title, Snackbar.LENGTH_LONG)
                         .show()
                 } else {
-                    presenter.doAddOrSave(binding.placemarkTitle.text.toString(), binding.description.text.toString())
+                    GlobalScope.launch(Dispatchers.IO) {
+                        presenter.doAddOrSave(
+                            binding.placemarkTitle.text.toString(),
+                            binding.description.text.toString()
+                        )
+                    }
                 }
             }
             R.id.item_delete -> {
-                presenter.doDelete()
+                GlobalScope.launch(Dispatchers.IO){
+                    presenter.doDelete()
+                }
             }
             R.id.item_cancel -> {
                 presenter.doCancel()
@@ -88,18 +92,22 @@ class PlacemarkView : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
     fun showPlacemark(placemark: PlacemarkModel) {
-        binding.placemarkTitle.setText(placemark.title)
-        binding.description.setText(placemark.description)
+        if (binding.placemarkTitle.text.isEmpty()) binding.placemarkTitle.setText(placemark.title)
+        if (binding.description.text.isEmpty())  binding.description.setText(placemark.description)
 
         Picasso.get()
             .load(placemark.image)
             .into(binding.placemarkImage)
+
         if (placemark.image != Uri.EMPTY) {
             binding.chooseImage.setText(R.string.change_placemark_image)
         }
-        binding.lat.setText("%.6f".format(placemark.lat))
-        binding.lng.setText("%.6f".format(placemark.lng))
+        //binding.lat.setText("%.6f".format(placemark.lat))
+        //binding.lng.setText("%.6f".format(placemark.lng))
+        binding.lat.setText("%.6f".format(placemark.location.lat))
+        binding.lng.setText("%.6f".format(placemark.location.lng))
     }
 
     fun updateImage(image: Uri){
@@ -128,7 +136,6 @@ class PlacemarkView : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         binding.mapView2.onResume()
-
         presenter.doRestartLocationUpdates()
     }
 
@@ -136,4 +143,5 @@ class PlacemarkView : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         binding.mapView2.onSaveInstanceState(outState)
     }
+
 }

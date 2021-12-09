@@ -29,31 +29,38 @@ class PlacemarkJSONStore(private val context: Context) : PlacemarkStore {
         }
     }
 
-    override fun findAll(): MutableList<PlacemarkModel> {
+    override suspend fun findAll(): MutableList<PlacemarkModel> {
         logAll()
         return placemarks
     }
 
-    override fun create(placemark: PlacemarkModel) {
+    override suspend fun create(placemark: PlacemarkModel) {
         placemark.id = generateRandomId()
         placemarks.add(placemark)
         serialize()
     }
 
 
-    override fun update(placemark: PlacemarkModel) {
+    suspend override fun update(placemark: PlacemarkModel) {
         val placemarksList = findAll() as ArrayList<PlacemarkModel>
         var foundPlacemark: PlacemarkModel? = placemarksList.find { p -> p.id == placemark.id }
         if (foundPlacemark != null) {
             foundPlacemark.title = placemark.title
             foundPlacemark.description = placemark.description
             foundPlacemark.image = placemark.image
-            foundPlacemark.lat = placemark.lat
-            foundPlacemark.lng = placemark.lng
-            foundPlacemark.zoom = placemark.zoom
-            logAll()
+            foundPlacemark.location = placemark.location
         }
         serialize()
+    }
+
+    override suspend fun delete(placemark: PlacemarkModel) {
+        val foundPlacemark: PlacemarkModel? = placemarks.find { it.id == placemark.id }
+        placemarks.remove(foundPlacemark)
+        serialize()
+    }
+    override suspend fun findById(id:Long) : PlacemarkModel? {
+        val foundPlacemark: PlacemarkModel? = placemarks.find { it.id == id }
+        return foundPlacemark
     }
 
     private fun serialize() {
@@ -66,19 +73,8 @@ class PlacemarkJSONStore(private val context: Context) : PlacemarkStore {
         placemarks = gsonBuilder.fromJson(jsonString, listType)
     }
 
-    override fun delete(placemark: PlacemarkModel) {
-        val foundPlacemark: PlacemarkModel? = placemarks.find {it.id==placemark.id}
-        placemarks.remove(foundPlacemark)
-        serialize()
-    }
-
     private fun logAll() {
         placemarks.forEach { Timber.i("$it") }
-    }
-
-    override fun findById(id:Long) : PlacemarkModel? {
-        val foundPlacemark: PlacemarkModel? = placemarks.find { it.id == id }
-        return foundPlacemark
     }
 }
 

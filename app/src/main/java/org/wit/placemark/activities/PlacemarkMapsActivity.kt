@@ -14,8 +14,8 @@ import org.wit.placemark.databinding.ActivityPlacemarkMapsBinding
 import org.wit.placemark.databinding.ContentPlacemarkMapsBinding
 import org.wit.placemark.main.MainApp
 
-class PlacemarkMapsActivity : AppCompatActivity() , GoogleMap.OnMarkerClickListener{
-
+class PlacemarkMapsActivity : AppCompatActivity() /*, GoogleMap.OnMarkerClickListener*/{
+/*
     private lateinit var binding: ActivityPlacemarkMapsBinding
     private lateinit var contentBinding: ContentPlacemarkMapsBinding
     lateinit var map: GoogleMap
@@ -90,6 +90,6 @@ class PlacemarkMapsActivity : AppCompatActivity() , GoogleMap.OnMarkerClickListe
         super.onSaveInstanceState(outState)
         contentBinding.mapView.onSaveInstanceState(outState)
     }
-
+*/
 
 }

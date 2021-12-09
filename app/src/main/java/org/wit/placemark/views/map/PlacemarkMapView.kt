@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.wit.placemark.databinding.ActivityPlacemarkMapsBinding
 import org.wit.placemark.databinding.ContentPlacemarkMapsBinding
 import org.wit.placemark.main.MainApp
@@ -30,8 +33,16 @@ class PlacemarkMapView : AppCompatActivity() , GoogleMap.OnMarkerClickListener{
 
         contentBinding.mapView.onCreate(savedInstanceState)
         contentBinding.mapView.getMapAsync{
-            presenter.doPopulateMap(it)
+            GlobalScope.launch(Dispatchers.Main) {
+                presenter.doPopulateMap(it)
+            }
         }
+    }
+    override fun onMarkerClick(marker: Marker): Boolean {
+        GlobalScope.launch(Dispatchers.Main) {
+            presenter.doMarkerSelected(marker)
+        }
+        return true
     }
     fun showPlacemark(placemark: PlacemarkModel) {
         contentBinding.currentTitle.text = placemark.title
@@ -39,11 +50,6 @@ class PlacemarkMapView : AppCompatActivity() , GoogleMap.OnMarkerClickListener{
         Picasso.get()
             .load(placemark.image)
             .into(contentBinding.imageView)
-    }
-
-    override fun onMarkerClick(marker: Marker): Boolean {
-        presenter.doMarkerSelected(marker)
-        return true
     }
 
     override fun onDestroy() {
